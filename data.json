@@ -1,0 +1,12 @@
+{
+  "pregnant": {
+    "1": {"diet":"Leafy Greens, Whole Grains","supplements":"Iron, Folic Acid","next_checkup":"2025-09-15"},
+    "2": {"diet":"Fruits, Vegetables","supplements":"Iron, Vitamin D","next_checkup":"2025-09-22"},
+    "3": {"diet":"High Protein, Whole Grains","supplements":"Calcium, Iron","next_checkup":"2025-09-29"}
+  },
+  "patients": {
+    "diabetes": {"medications":"Metformin, Insulin","diet":"Low sugar, High fiber","exercise":"30 min walk"},
+    "breast cancer": {"medications":"Chemotherapy","diet":"High protein","exercise":"Light walk"},
+    "tumor": {"medications":"Chemotherapy","diet":"High protein","exercise":"Light walk"}
+  }
+}
