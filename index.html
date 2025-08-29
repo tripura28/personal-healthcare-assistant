@@ -12,10 +12,10 @@
 
   <style>
     body { font-family: Arial; margin: 20px; background: #f5f7fa; }
-    .card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 8px; background: #fff; box-shadow: 1px 1px 5px rgba(0,0,0,0.1);}
+    .card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 8px; background: #fff; box-shadow: 1px 1px 5px rgba(0,0,0,0.1); }
     h1, h2 { color: #2a7f62; }
     input { padding: 8px; margin-right: 10px; }
-    button { padding: 8px 12px; background: #2a7f62; color: white; border: none; border-radius: 5px; cursor: pointer;}
+    button { padding: 8px 12px; background: #2a7f62; color: white; border: none; border-radius: 5px; cursor: pointer; }
     table { border-collapse: collapse; width: 100%; margin-top: 20px; }
     th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
     th { background: #2a7f62; color: white; }
@@ -37,7 +37,7 @@
       const [history, setHistory] = React.useState([]);
 
       const getPregRecommendation = () => {
-        if(!trimester) return alert('Enter trimester');
+        if (!trimester) return alert('Enter trimester');
         fetch('http://127.0.0.1:5000/pregnant/recommendation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -46,12 +46,12 @@
         .then(res => res.json())
         .then(data => {
           setPregResult(data);
-          setHistory(prev => [...prev, {type:'Pregnant', input: trimester, result:data}]);
+          setHistory(prev => [...prev, { type: 'Pregnant', input: trimester, result: data }]);
         });
       };
 
       const getPatientRecommendation = () => {
-        if(!condition) return alert('Enter condition');
+        if (!condition) return alert('Enter condition');
         fetch('http://127.0.0.1:5000/patient/recommendation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -60,24 +60,24 @@
         .then(res => res.json())
         .then(data => {
           setPatientResult(data);
-          setHistory(prev => [...prev, {type:'Patient', input: condition, result:data}]);
+          setHistory(prev => [...prev, { type: 'Patient', input: condition, result: data }]);
         });
       };
 
       return e('div', null,
         e('h2', null, 'Pregnant Dietary Recommendation'),
-        e('input', { type:'number', placeholder:'Trimester', value: trimester, onChange:e=>setTrimester(e.target.value) }),
-        e('button', { onClick:getPregRecommendation }, 'Get Recommendation'),
-        pregResult.diet && e('div', { className:'card' },
+        e('input', { type: 'number', placeholder: 'Trimester', value: trimester, onChange: e => setTrimester(e.target.value) }),
+        e('button', { onClick: getPregRecommendation }, 'Get Recommendation'),
+        pregResult.diet && e('div', { className: 'card' },
           e('p', null, `Diet: ${pregResult.diet}`),
           e('p', null, `Supplements: ${pregResult.supplements}`),
           e('p', null, `Next Checkup: ${pregResult.next_checkup}`)
         ),
 
         e('h2', null, 'Patient Dietary Recommendation'),
-        e('input', { type:'text', placeholder:'Condition', value: condition, onChange:e=>setCondition(e.target.value) }),
-        e('button', { onClick:getPatientRecommendation }, 'Get Recommendation'),
-        patientResult.medications && e('div', { className:'card' },
+        e('input', { type: 'text', placeholder: 'Condition', value: condition, onChange: e => setCondition(e.target.value) }),
+        e('button', { onClick: getPatientRecommendation }, 'Get Recommendation'),
+        patientResult.medications && e('div', { className: 'card' },
           e('p', null, `Medications: ${patientResult.medications}`),
           e('p', null, `Diet: ${patientResult.diet}`),
           e('p', null, `Exercise: ${patientResult.exercise}`)
@@ -107,4 +107,3 @@
   </script>
 </body>
 </html>
-
