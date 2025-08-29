@@ -74,7 +74,7 @@
           e('p', null, `Next Checkup: ${pregResult.next_checkup}`)
         ),
 
-        e('h2', null, 'Patient Recommendation'),
+        e('h2', null, 'Patient Dietary Recommendation'),
         e('input', { type:'text', placeholder:'Condition', value: condition, onChange:e=>setCondition(e.target.value) }),
         e('button', { onClick:getPatientRecommendation }, 'Get Recommendation'),
         patientResult.medications && e('div', { className:'card' },
@@ -107,3 +107,4 @@
   </script>
 </body>
 </html>
+
