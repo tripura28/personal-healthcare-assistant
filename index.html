@@ -1,110 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Personal Healthcare Assistant</title>
-    <!-- React and ReactDOM via CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <!-- Recharts -->
-    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; }
-        h1 { color: #2e7d32; }
-        .card { background: white; padding: 20px; margin: 10px 0; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
-        input, button { padding: 8px; margin: 5px 0; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #2e7d32; color: white; }
-    </style>
+  <title>Personal Healthcare Assistant</title>
+
+  <!-- React CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body { font-family: Arial; margin: 20px; background: #f5f7fa; }
+    .card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 8px; background: #fff; box-shadow: 1px 1px 5px rgba(0,0,0,0.1);}
+    h1, h2 { color: #2a7f62; }
+    input { padding: 8px; margin-right: 10px; }
+    button { padding: 8px 12px; background: #2a7f62; color: white; border: none; border-radius: 5px; cursor: pointer;}
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #2a7f62; color: white; }
+  </style>
 </head>
 <body>
-    <h1>Personal Healthcare Assistant</h1>
-    <div id="root"></div>
+  <h1>Personal Healthcare Assistant</h1>
 
-    <script type="text/babel">
-        const { useState } = React;
+  <div id="root"></div>
 
-        function App() {
-            const [trimester, setTrimester] = useState('');
-            const [condition, setCondition] = useState('');
-            const [pregnancyResult, setPregnancyResult] = useState(null);
-            const [patientResult, setPatientResult] = useState(null);
-            const [history, setHistory] = useState([]);
+  <script type="text/javascript">
+    const e = React.createElement;
 
-            const getPregnancy = async () => {
-                const res = await fetch('http://127.0.0.1:5000/pregnant/recommendation', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ trimester })
-                });
-                const data = await res.json();
-                setPregnancyResult(data);
-                setHistory(prev => [...prev, { type: 'Pregnancy', input: trimester, result: data.diet || 'No recommendation' }]);
-            };
+    function App() {
+      const [pregResult, setPregResult] = React.useState({});
+      const [patientResult, setPatientResult] = React.useState({});
+      const [trimester, setTrimester] = React.useState('');
+      const [condition, setCondition] = React.useState('');
+      const [history, setHistory] = React.useState([]);
 
-            const getPatient = async () => {
-                const res = await fetch('http://127.0.0.1:5000/patient/recommendation', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ condition })
-                });
-                const data = await res.json();
-                setPatientResult(data);
-                setHistory(prev => [...prev, { type: 'Patient', input: condition, result: data.medications || 'No recommendation' }]);
-            };
+      const getPregRecommendation = () => {
+        if(!trimester) return alert('Enter trimester');
+        fetch('http://127.0.0.1:5000/pregnant/recommendation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ trimester })
+        })
+        .then(res => res.json())
+        .then(data => {
+          setPregResult(data);
+          setHistory(prev => [...prev, {type:'Pregnant', input: trimester, result:data}]);
+        });
+      };
 
-            return (
-                <div>
-                    <div className="card">
-                        <h2>Pregnant Dietary Recommendation</h2>
-                        <input type="number" placeholder="Trimester 1-3" value={trimester} onChange={e => setTrimester(e.target.value)} />
-                        <button onClick={getPregnancy}>Get Recommendation</button>
-                        {pregnancyResult && <div>
-                            <p><b>Diet:</b> {pregnancyResult.diet}</p>
-                            <p><b>Supplements:</b> {pregnancyResult.supplements}</p>
-                            <p><b>Next Checkup:</b> {pregnancyResult.next_checkup}</p>
-                        </div>}
-                    </div>
+      const getPatientRecommendation = () => {
+        if(!condition) return alert('Enter condition');
+        fetch('http://127.0.0.1:5000/patient/recommendation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ condition })
+        })
+        .then(res => res.json())
+        .then(data => {
+          setPatientResult(data);
+          setHistory(prev => [...prev, {type:'Patient', input: condition, result:data}]);
+        });
+      };
 
-                    <div className="card">
-                        <h2>Patient Recommendation</h2>
-                        <input type="text" placeholder="Condition" value={condition} onChange={e => setCondition(e.target.value)} />
-                        <button onClick={getPatient}>Get Recommendation</button>
-                        {patientResult && <div>
-                            <p><b>Medications:</b> {patientResult.medications}</p>
-                            <p><b>Diet:</b> {patientResult.diet}</p>
-                            <p><b>Exercise:</b> {patientResult.exercise}</p>
-                        </div>}
-                    </div>
+      return e('div', null,
+        e('h2', null, 'Pregnant Dietary Recommendation'),
+        e('input', { type:'number', placeholder:'Trimester', value: trimester, onChange:e=>setTrimester(e.target.value) }),
+        e('button', { onClick:getPregRecommendation }, 'Get Recommendation'),
+        pregResult.diet && e('div', { className:'card' },
+          e('p', null, `Diet: ${pregResult.diet}`),
+          e('p', null, `Supplements: ${pregResult.supplements}`),
+          e('p', null, `Next Checkup: ${pregResult.next_checkup}`)
+        ),
 
-                    <div className="card">
-                        <h2>History</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Input</th>
-                                    <th>Result</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {history.map((h, i) => (
-                                    <tr key={i}>
-                                        <td>{h.type}</td>
-                                        <td>{h.input}</td>
-                                        <td>{h.result}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            );
-        }
+        e('h2', null, 'Patient Recommendation'),
+        e('input', { type:'text', placeholder:'Condition', value: condition, onChange:e=>setCondition(e.target.value) }),
+        e('button', { onClick:getPatientRecommendation }, 'Get Recommendation'),
+        patientResult.medications && e('div', { className:'card' },
+          e('p', null, `Medications: ${patientResult.medications}`),
+          e('p', null, `Diet: ${patientResult.diet}`),
+          e('p', null, `Exercise: ${patientResult.exercise}`)
+        ),
 
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
+        e('h2', null, 'History'),
+        e('table', null,
+          e('thead', null,
+            e('tr', null,
+              e('th', null, 'Type'),
+              e('th', null, 'Input'),
+              e('th', null, 'Result')
+            )
+          ),
+          e('tbody', null,
+            history.map((h, idx) => e('tr', { key: idx },
+              e('td', null, h.type),
+              e('td', null, h.input),
+              e('td', null, JSON.stringify(h.result))
+            ))
+          )
+        )
+      );
+    }
+
+    ReactDOM.render(e(App), document.getElementById('root'));
+  </script>
 </body>
 </html>
